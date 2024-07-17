@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres
+    restart: unless-stopped
+    env_file: ./.env
+    environment:
+      - POSTGRES_PASSWORD=$DATABASE_PASS 
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
+    networks:
+      - auth
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: ./.env
+    ports:
+      - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_USER=$DATABASE_USER
+      - DATABASE=$DATABASE
+      - DATABASE_PASS=$DATABASE_PASS
+      - GRPC_URL=$GRPC_URL
+      - JWT_SECRET=$JWT_SECRET
+    depends_on:
+      - db
+    volumes:
+      - ./src:/app/src
+    networks:
+      - auth
+    stdin_open: true
+    tty: true
+
+networks:
+  auth:

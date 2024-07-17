@@ -1,0 +1,7 @@
+auth-service/.env
+auth-service/dist
+auth-service/node_modules
+auth-service/pgdata
+api-gateway/.env
+api-gateway/dist
+api-gateway/node_modules

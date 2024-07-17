@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  app_gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: ./.env
+    ports:
+      - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
+    environment:
+      - GRPC_URL=$GRPC_URL
+      - THROTTLE_TTL=$THROTTLE_TTL
+      - THROTTLE_LIMIT=$THROTTLE_LIMIT
+    volumes:
+      - ./src:/app/src
+    networks:
+      - auth
+    stdin_open: true
+    tty: true
+
+networks:
+  auth:
